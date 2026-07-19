@@ -1,0 +1,37 @@
+name: Trade loop (paper)
+
+on:
+  schedule:
+    # Every 30 min during US market hours, Mon-Fri.
+    # 13:30-20:00 UTC ≈ 9:30am-4pm ET (winter). Add margin; harmless outside hours (bot no-ops).
+    - cron: "*/30 13-21 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: trade-loop
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Run trader
+        run: python3 trader.py
+        env:
+          WATCHLIST: ${{ vars.WATCHLIST }}
+          KILL_SWITCH: ${{ vars.KILL_SWITCH }}
+      - name: Commit state + dashboard
+        run: |
+          git config user.name "paper-trader-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add paper_state.json dashboard.html trader.log 2>/dev/null || true
+          git diff --staged --quiet || git commit -m "auto: trade loop run $(date -u +%FT%TZ)"
+          git push
