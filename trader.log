@@ -1,0 +1,7 @@
+2026-07-19 06:24:19,539 INFO GLD last_bar=2026-07-17 15:30:00-04:00 age=2094min -> market closed/stale
+2026-07-19 06:24:19,816 INFO SPY last_bar=2026-07-17 15:30:00-04:00 age=2094min -> market closed/stale
+2026-07-19 06:24:20,027 INFO UCO last_bar=2026-07-17 15:30:00-04:00 age=2094min -> market closed/stale
+2026-07-19 06:24:20,219 INFO UNG last_bar=2026-07-17 15:30:00-04:00 age=2094min -> market closed/stale
+2026-07-19 06:24:20,395 INFO USO last_bar=2026-07-17 15:30:00-04:00 age=2094min -> market closed/stale
+2026-07-19 06:24:20,618 INFO XLE last_bar=2026-07-17 15:30:00-04:00 age=2094min -> market closed/stale
+2026-07-19 06:24:20,618 INFO STATUS market=closed equity=$10000.00 cash=$10000.00 dailyPL=0.00% positions=[] pending=0 trades=0

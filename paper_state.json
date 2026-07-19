@@ -1,0 +1,15 @@
+{
+  "cash": 10000.0,
+  "positions": {},
+  "pending": [],
+  "trades": [],
+  "equity_history": [
+    {
+      "t": "2026-07-19T06:24:20.618289+00:00",
+      "equity": 10000.0
+    }
+  ],
+  "day_start_equity": 10000.0,
+  "last_day": "2026-07-19",
+  "last_processed_bar": {}
+}
