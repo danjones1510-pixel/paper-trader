@@ -3,7 +3,6 @@ name: Trade loop (paper)
 on:
   schedule:
     # Every 30 min during US market hours, Mon-Fri.
-    # 13:30-20:00 UTC ≈ 9:30am-4pm ET (winter). Add margin; harmless outside hours (bot no-ops).
     - cron: "*/30 13-21 * * 1-5"
   workflow_dispatch: {}
 
@@ -18,8 +17,8 @@ jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
       - run: pip install -r requirements.txt
