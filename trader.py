@@ -358,37 +358,177 @@ def apply_commands(state, commands, prices):
 
 
 # ----------------------------- Dashboard -----------------------------
+CHART_COLORS = ["#20808D", "#A84B2F", "#1B474D", "#BCE2E7", "#944454", "#FFC553", "#848456", "#6E522B"]
+
+
+def _kpi_card(label, value, color=None):
+    c = f"color:{color};" if color else ""
+    return (f"<div class='card'><div class='kpi-label'>{label}</div>"
+            f"<div class='kpi-val' style='{c}'>{value}</div></div>")
+
+
+def _allocation_bar(state, prices, equity):
+    """Horizontal stacked bar: deployed capital per position + available capacity."""
+    segs = []
+    total_exposure = 0.0
+    for i, (sym, pos) in enumerate(state["positions"].items()):
+        price = prices.get(sym, pos["entry"])
+        mv = abs(pos["qty"]) * price
+        total_exposure += mv
+        pct = (mv / equity * 100) if equity > 0 else 0
+        color = CHART_COLORS[i % len(CHART_COLORS)]
+        segs.append(f"<div class='seg' style='width:{pct:.1f}%;background:{color};' title='{sym}: ${mv:.0f} ({pct:.1f}%)'><span>{sym}</span></div>")
+    avail = max(0, equity - total_exposure)
+    avail_pct = (avail / equity * 100) if equity > 0 else 0
+    segs.append(f"<div class='seg avail' style='width:{avail_pct:.1f}%;' title='Available: ${avail:.0f} ({avail_pct:.1f}%)'><span>Available</span></div>")
+    labels = ""
+    for i, (sym, pos) in enumerate(state["positions"].items()):
+        price = prices.get(sym, pos["entry"])
+        mv = abs(pos["qty"]) * price
+        color = CHART_COLORS[i % len(CHART_COLORS)]
+        labels += (f"<span class='legend-item'><span class='legend-dot' style='background:{color};'></span>"
+                   f"{sym} ${mv:.0f}</span>")
+    labels += f"<span class='legend-item'><span class='legend-dot' style='background:#393836;'></span>Available ${avail:.0f}</span>"
+    return f"<div class='alloc-bar'>{''.join(segs)}</div><div class='legend'>{labels}</div>"
+
+
+def _equity_curve_svg(state):
+    """Inline SVG line chart of equity over time."""
+    hist = state.get("equity_history", [])
+    if len(hist) < 2:
+        return "<div class='muted' style='padding:20px;text-align:center;'>Equity curve will populate after scheduled runs.</div>"
+    w, h = 600, 160
+    eqs = [p["equity"] for p in hist]
+    mn, mx = min(eqs), max(eqs)
+    rng = mx - mn if mx != mn else 1
+    pad = 20
+    points = []
+    for i, p in enumerate(hist):
+        x = pad + (i / (len(hist) - 1)) * (w - 2 * pad)
+        y = h - pad - ((p["equity"] - mn) / rng) * (h - 2 * pad)
+        points.append(f"{x:.1f},{y:.1f}")
+    polyline = " ".join(points)
+    last_eq = eqs[-1]
+    line_color = "#4F98A3" if last_eq >= eqs[0] else "#D163A7"
+    fill_color = "#4F98A3" if last_eq >= eqs[0] else "#D163A7"
+    first_x, first_y = points[0].split(",")
+    last_x, last_y = points[-1].split(",")
+    area = f"{first_x},{h-pad} " + polyline + f" {last_x},{h-pad}"
+    return (f"<svg viewBox='0 0 {w} {h}' preserveAspectRatio='xMidYMid meet' style='width:100%;height:160px;'>"
+            f"<polygon points='{area}' fill='{fill_color}' opacity='0.12'/>"
+            f"<polyline points='{polyline}' fill='none' stroke='{line_color}' stroke-width='2'/>"
+            f"<text x='{pad}' y='14' fill='#797876' font-size='10'>${mn:.0f}</text>"
+            f"<text x='{w-pad}' y='14' fill='#797876' font-size='9' text-anchor='end'>${mx:.0f}</text>"
+            f"</svg>")
+
+
+def _pnl_bars(state, prices):
+    """Horizontal bars for unrealized P/L by symbol."""
+    bars = []
+    for sym, pos in state["positions"].items():
+        price = prices.get(sym, pos["entry"])
+        u = unrealized_pos(pos, price)
+        max_abs = max(abs(t["pnl"]) for t in state["trades"] + [{"pnl": abs(u)}]) if (state["trades"] or u != 0) else 1
+        bar_pct = min(100, abs(u) / max_abs * 100) if max_abs > 0 else 0
+        color = "#6DAA45" if u >= 0 else "#D163A7"
+        sign = "+" if u >= 0 else ""
+        bars.append(f"<div class='pnl-row'><span class='pnl-sym'>{sym}</span>"
+                    f"<div class='pnl-bar-bg'><div class='pnl-bar' style='width:{bar_pct:.0f}%;background:{color};'></div></div>"
+                    f"<span class='pnl-val' style='color:{color};'>{sign}${u:.2f}</span></div>")
+    if not bars:
+        return "<div class='muted' style='padding:12px;'>No open positions.</div>"
+    return "".join(bars)
+
+
 def render_dashboard(state, prices, market_open, pending_commands=None):
     equity = total_equity(state, prices)
+    pnl = sum(t["pnl"] for t in state["trades"])
+    dse = state.get("day_start_equity", equity)
+    daily_pl = (equity - dse) if dse else 0
+    daily_pl_pct = ((equity - dse) / dse * 100) if dse else 0
+    gross_exp = exposure_used(state, prices)
+    gross_pct = (gross_exp / equity * 100) if equity > 0 else 0
+    n_pos = len(state["positions"])
+    cmds_list = []
+    if pending_commands:
+        for c in pending_commands:
+            cmd = c.get("cmd", "?")
+            sym = c.get("symbol", "")
+            lvl = c.get("level", "")
+            cmds_list.append(f"{cmd} {sym} ({lvl})")
+    cmds_display = ", ".join(cmds_list) if cmds_list else "none"
+    status = "MARKET OPEN — trading active" if market_open else "MARKET CLOSED — dashboard only, no trades"
+
+    # Position table rows
     rows = []
     for sym in WATCHLIST:
         pos = state["positions"].get(sym)
         price = prices.get(sym, 0)
         if pos:
             u = unrealized_pos(pos, price)
-            color = "green" if u >= 0 else "red"
+            color = "#6DAA45" if u >= 0 else "#D163A7"
             rows.append(f"<tr><td>{sym}</td><td>{price:.2f}</td><td>{pos['side']} {pos['qty']:.4f}</td>"
                         f"<td>{pos['entry']:.2f}</td><td>{pos['stop']:.2f}</td><td>{pos['target']:.2f}</td>"
-                        f"<td style='color:{color}'>${u:.2f}</td></tr>")
+                        f"<td style='color:{color}'>{'+$' if u>=0 else '-$'}{abs(u):.2f}</td></tr>")
         else:
             rows.append(f"<tr><td>{sym}</td><td>{price:.2f}</td><td colspan='5'>flat</td></tr>")
+
     pending = "".join(
         f"<li>{o['side']} {o['symbol']} {o['qty']:.4f} @ {o['limit_price']:.2f} (stop {o['stop']:.2f} / target {o['target']:.2f})</li>"
         for o in state["pending"]) or "<li>none</li>"
-    pnl = sum(t["pnl"] for t in state["trades"])
-    cmds_display = json.dumps(pending_commands) if pending_commands else "none"
-    status = "MARKET OPEN — trading active" if market_open else "MARKET CLOSED — dashboard only, no trades"
-    html = f"""<!doctype html><html><head><meta charset='utf-8'><title>Paper Trader</title>
+
+    # Build KPI cards
+    daily_color = "#6DAA45" if daily_pl >= 0 else "#D163A7"
+    pnl_color = "#6DAA45" if pnl >= 0 else "#D163A7"
+    kpis = (
+        _kpi_card("Equity", f"${equity:,.2f}", "#4F98A3") +
+        _kpi_card("Realized P/L", f"{'+' if pnl>=0 else '-'}${abs(pnl):,.2f}", pnl_color) +
+        _kpi_card("Daily P/L", f"{'+' if daily_pl>=0 else '-'}${abs(daily_pl):,.2f} ({daily_pl_pct:+.1f}%)", daily_color) +
+        _kpi_card("Gross Exposure", f"{gross_pct:.0f}%", "#BB653B" if gross_pct > 80 else "#797876") +
+        _kpi_card("Open Positions", str(n_pos), None) +
+        _kpi_card("Cash Basis", f"${state['cash']:,.2f}", "#797876")
+    )
+
+    alloc = _allocation_bar(state, prices, equity)
+    curve = _equity_curve_svg(state)
+    pnl_bars = _pnl_bars(state, prices)
+
+    html = f"""<!doctype html><html><head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>Paper Trader</title>
 <meta http-equiv='refresh' content='60'>
-<style>body{{font-family:Arial,sans-serif;background:#171614;color:#CDCCCA;margin:20px;}}
-h1{{color:#4F98A3;}}table{{border-collapse:collapse;width:100%;}}td,th{{border:1px solid #393836;padding:6px;text-align:left;}}
-th{{background:#1C1B19;}}.kpi{{font-size:24px;font-weight:bold;}} .muted{{color:#797876;}} .warn{{color:#BB653B;}}</style></head>
+<style>
+body{{font-family:Arial,sans-serif;background:#171614;color:#CDCCCA;margin:16px;max-width:900px;}}
+h1{{color:#4F98A3;margin:0 0 4px;}}h2{{color:#4F98A3;font-size:15px;margin:20px 0 8px;border-bottom:1px solid #393836;padding-bottom:4px;}}
+table{{border-collapse:collapse;width:100%;font-size:13px;}}td,th{{border:1px solid #393836;padding:5px 8px;text-align:left;}}
+th{{background:#1C1B19;}}.muted{{color:#797876;}}.warn{{color:#BB653B;}}
+.kpi-row{{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;}}
+.card{{background:#1C1B19;border:1px solid #393836;border-radius:6px;padding:10px 14px;flex:1;min-width:120px;}}
+.kpi-label{{font-size:11px;color:#797876;text-transform:uppercase;letter-spacing:.5px;}}
+.kpi-val{{font-size:20px;font-weight:bold;margin-top:2px;}}
+.alloc-bar{{display:flex;height:28px;border-radius:4px;overflow:hidden;border:1px solid #393836;margin:8px 0;}}
+.seg{{display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:bold;overflow:hidden;white-space:nowrap;}}
+.seg.avail{{background:#393836;color:#797876;}}
+.legend{{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;margin-bottom:8px;}}
+.legend-item{{display:flex;align-items:center;gap:4px;}}
+.legend-dot{{width:8px;height:8px;border-radius:2px;display:inline-block;}}
+.pnl-row{{display:flex;align-items:center;gap:8px;margin:4px 0;}}
+.pnl-sym{{width:40px;font-weight:bold;font-size:13px;}}
+.pnl-bar-bg{{flex:1;height:18px;background:#1C1B19;border-radius:3px;overflow:hidden;}}
+.pnl-bar{{height:100%;border-radius:3px;}}
+.pnl-val{{width:70px;text-align:right;font-size:13px;font-weight:bold;}}
+</style></head>
 <body><h1>Paper Trader — Funny Money</h1>
 <p class='{"muted" if market_open else "warn"}'>{status}. Updated {datetime.now(timezone.utc).isoformat()}</p>
-<p>Cash: <span class='kpi'>${state['cash']:.2f}</span> &nbsp; Equity: <span class='kpi'>${equity:.2f}</span>
-&nbsp; Realized P/L: <span class='kpi' style='color:{"green" if pnl>=0 else "red"}'>${pnl:.2f}</span>
-&nbsp; Trades: {len(state['trades'])}</p>
-<h2>Watchlist &amp; Positions</h2><table><tr><th>Symbol</th><th>Price</th><th>Position</th><th>Entry</th><th>Stop</th><th>Target</th><th>Unrealized</th></tr>
+<div class='kpi-row'>{kpis}</div>
+<h2>Where the Money Is</h2>
+{alloc}
+<h2>Equity Curve</h2>
+{curve}
+<h2>Unrealized P/L by Position</h2>
+{pnl_bars}
+<h2>Watchlist &amp; Positions</h2>
+<table><tr><th>Symbol</th><th>Price</th><th>Position</th><th>Entry</th><th>Stop</th><th>Target</th><th>Unrealized</th></tr>
 {''.join(rows)}</table>
 <h2>Pending Limit Orders</h2><ul>{pending}</ul>
 <p class='muted'>Queued commands: {cmds_display}</p>
