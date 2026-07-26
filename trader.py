@@ -358,7 +358,7 @@ def apply_commands(state, commands, prices):
 
 
 # ----------------------------- Dashboard -----------------------------
-def render_dashboard(state, prices, market_open):
+def render_dashboard(state, prices, market_open, pending_commands=None):
     equity = total_equity(state, prices)
     rows = []
     for sym in WATCHLIST:
@@ -376,6 +376,7 @@ def render_dashboard(state, prices, market_open):
         f"<li>{o['side']} {o['symbol']} {o['qty']:.4f} @ {o['limit_price']:.2f} (stop {o['stop']:.2f} / target {o['target']:.2f})</li>"
         for o in state["pending"]) or "<li>none</li>"
     pnl = sum(t["pnl"] for t in state["trades"])
+    cmds_display = json.dumps(pending_commands) if pending_commands else "none"
     status = "MARKET OPEN — trading active" if market_open else "MARKET CLOSED — dashboard only, no trades"
     html = f"""<!doctype html><html><head><meta charset='utf-8'><title>Paper Trader</title>
 <meta http-equiv='refresh' content='60'>
@@ -390,7 +391,7 @@ th{{background:#1C1B19;}}.kpi{{font-size:24px;font-weight:bold;}} .muted{{color:
 <h2>Watchlist &amp; Positions</h2><table><tr><th>Symbol</th><th>Price</th><th>Position</th><th>Entry</th><th>Stop</th><th>Target</th><th>Unrealized</th></tr>
 {''.join(rows)}</table>
 <h2>Pending Limit Orders</h2><ul>{pending}</ul>
-<p class='muted'>Conviction trade via commands.json: {{\"cmd\":\"conviction_long\",\"symbol\":\"USO\",\"level\":\"high\"}}</p>
+<p class='muted'>Queued commands: {cmds_display}</p>
 </body></html>"""
     with open(DASHBOARD_FILE, "w") as f:
         f.write(html)
@@ -497,7 +498,7 @@ def run():
     state["equity_history"] = state["equity_history"][-1000:]
     save_state(state)
     save_commands(still_pending)  # persist only unapplied commands, after state is safely saved
-    render_dashboard(state, prices, market_open)
+    render_dashboard(state, prices, market_open, still_pending)
     log.info(f"STATUS market={'open' if market_open else 'closed'} equity=${equity:.2f} cash=${state['cash']:.2f} "
              f"dailyPL={daily_pl:.2f}% positions={list(state['positions'])} pending={len(state['pending'])} trades={len(state['trades'])}")
 
