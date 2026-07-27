@@ -1,15 +1,40 @@
-<!doctype html><html><head><meta charset='utf-8'><title>Paper Trader</title>
+<!doctype html><html><head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>Paper Trader</title>
 <meta http-equiv='refresh' content='60'>
-<style>body{font-family:Arial,sans-serif;background:#171614;color:#CDCCCA;margin:20px;}
-h1{color:#4F98A3;}table{border-collapse:collapse;width:100%;}td,th{border:1px solid #393836;padding:6px;text-align:left;}
-th{background:#1C1B19;}.kpi{font-size:24px;font-weight:bold;} .muted{color:#797876;} .warn{color:#BB653B;}</style></head>
+<style>
+body{font-family:Arial,sans-serif;background:#171614;color:#CDCCCA;margin:16px;max-width:900px;}
+h1{color:#4F98A3;margin:0 0 4px;}h2{color:#4F98A3;font-size:15px;margin:20px 0 8px;border-bottom:1px solid #393836;padding-bottom:4px;}
+table{border-collapse:collapse;width:100%;font-size:13px;}td,th{border:1px solid #393836;padding:5px 8px;text-align:left;}
+th{background:#1C1B19;}.muted{color:#797876;}.warn{color:#BB653B;}
+.kpi-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;}
+.card{background:#1C1B19;border:1px solid #393836;border-radius:6px;padding:10px 14px;flex:1;min-width:120px;}
+.kpi-label{font-size:11px;color:#797876;text-transform:uppercase;letter-spacing:.5px;}
+.kpi-val{font-size:20px;font-weight:bold;margin-top:2px;}
+.alloc-bar{display:flex;height:28px;border-radius:4px;overflow:hidden;border:1px solid #393836;margin:8px 0;}
+.seg{display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:bold;overflow:hidden;white-space:nowrap;}
+.seg.avail{background:#393836;color:#797876;}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;margin-bottom:8px;}
+.legend-item{display:flex;align-items:center;gap:4px;}
+.legend-dot{width:8px;height:8px;border-radius:2px;display:inline-block;}
+.pnl-row{display:flex;align-items:center;gap:8px;margin:4px 0;}
+.pnl-sym{width:40px;font-weight:bold;font-size:13px;}
+.pnl-bar-bg{flex:1;height:18px;background:#1C1B19;border-radius:3px;overflow:hidden;}
+.pnl-bar{height:100%;border-radius:3px;}
+.pnl-val{width:70px;text-align:right;font-size:13px;font-weight:bold;}
+</style></head>
 <body><h1>Paper Trader — Funny Money</h1>
-<p class='warn'>MARKET CLOSED — dashboard only, no trades. Updated 2026-07-19T02:30:30.362681+00:00</p>
-<p>Cash: <span class='kpi'>$10000.00</span> &nbsp; Equity: <span class='kpi'>$10000.00</span>
-&nbsp; Realized P/L: <span class='kpi' style='color:green'>$0.00</span>
-&nbsp; Trades: 0</p>
-<h2>Watchlist &amp; Positions</h2><table><tr><th>Symbol</th><th>Price</th><th>Position</th><th>Entry</th><th>Stop</th><th>Target</th><th>Unrealized</th></tr>
-<tr><td>SPY</td><td>743.16</td><td colspan='5'>flat</td></tr><tr><td>USO</td><td>123.99</td><td colspan='5'>flat</td></tr><tr><td>UCO</td><td>41.00</td><td colspan='5'>flat</td></tr><tr><td>XLE</td><td>57.69</td><td colspan='5'>flat</td></tr><tr><td>UNG</td><td>10.51</td><td colspan='5'>flat</td></tr><tr><td>GLD</td><td>368.42</td><td colspan='5'>flat</td></tr></table>
+<p class='muted'>MARKET OPEN — trading active. Updated 2026-07-27T18:16:04.490993+00:00</p>
+<div class='kpi-row'><div class='card'><div class='kpi-label'>Equity</div><div class='kpi-val' style='color:#4F98A3;'>$10,000.00</div></div><div class='card'><div class='kpi-label'>Realized P/L</div><div class='kpi-val' style='color:#6DAA45;'>+$0.00</div></div><div class='card'><div class='kpi-label'>Daily P/L</div><div class='kpi-val' style='color:#6DAA45;'>+$0.00 (+0.0%)</div></div><div class='card'><div class='kpi-label'>Gross Exposure</div><div class='kpi-val' style='color:#797876;'>25%</div></div><div class='card'><div class='kpi-label'>Open Positions</div><div class='kpi-val' style=''>1</div></div><div class='card'><div class='kpi-label'>Cash Basis</div><div class='kpi-val' style='color:#797876;'>$10,000.00</div></div></div>
+<h2>Where the Money Is</h2>
+<div class='alloc-bar'><div class='seg' style='width:25.0%;background:#20808D;' title='USO: $2500 (25.0%)'><span>USO</span></div><div class='seg avail' style='width:75.0%;' title='Available: $7500 (75.0%)'><span>Available</span></div></div><div class='legend'><span class='legend-item'><span class='legend-dot' style='background:#20808D;'></span>USO $2500</span><span class='legend-item'><span class='legend-dot' style='background:#393836;'></span>Available $7500</span></div>
+<h2>Equity Curve</h2>
+<svg viewBox='0 0 600 160' preserveAspectRatio='xMidYMid meet' style='width:100%;height:160px;'><polygon points='20.0,140 20.0,140.0 580.0,140.0 580.0,140' fill='#4F98A3' opacity='0.12'/><polyline points='20.0,140.0 580.0,140.0' fill='none' stroke='#4F98A3' stroke-width='2'/><text x='20' y='14' fill='#797876' font-size='10'>$10000</text><text x='580' y='14' fill='#797876' font-size='9' text-anchor='end'>$10000</text></svg>
+<h2>Unrealized P/L by Position</h2>
+<div class='pnl-row'><span class='pnl-sym'>USO</span><div class='pnl-bar-bg'><div class='pnl-bar' style='width:0%;background:#6DAA45;'></div></div><span class='pnl-val' style='color:#6DAA45;'>+$0.00</span></div>
+<h2>Watchlist &amp; Positions</h2>
+<table><tr><th>Symbol</th><th>Price</th><th>Position</th><th>Entry</th><th>Stop</th><th>Target</th><th>Unrealized</th></tr>
+<tr><td>SPY</td><td>737.30</td><td colspan='5'>flat</td></tr><tr><td>USO</td><td>125.38</td><td>LONG 19.9394</td><td>125.38</td><td>122.87</td><td>130.40</td><td style='color:#6DAA45'>+$0.00</td></tr><tr><td>UCO</td><td>40.05</td><td colspan='5'>flat</td></tr><tr><td>XLE</td><td>58.69</td><td colspan='5'>flat</td></tr><tr><td>UNG</td><td>10.12</td><td colspan='5'>flat</td></tr><tr><td>GLD</td><td>373.77</td><td colspan='5'>flat</td></tr></table>
 <h2>Pending Limit Orders</h2><ul><li>none</li></ul>
-<p class='muted'>Conviction trade via commands.json: {"cmd":"conviction_long","symbol":"USO","level":"high"}</p>
+<p class='muted'>Queued commands: none</p>
 </body></html>
