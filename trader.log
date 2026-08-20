@@ -658,3 +658,13 @@
 2026-08-20 14:41:33,438 INFO USO price=133.67 rsi=63.5 signal=FLAT action=hold
 2026-08-20 14:41:33,440 INFO XLE price=64.36 rsi=69.1 signal=FLAT action=flat
 2026-08-20 14:41:33,442 INFO STATUS market=open equity=$10330.11 cash=$10311.19 dailyPL=-0.15% positions=['GLD', 'UCO', 'USO'] pending=0 trades=40
+2026-08-20 15:38:34,360 INFO CLOSE LONG USO 19.3202 @ 134.71 (conviction-replace) P/L=$20.09
+2026-08-20 15:38:34,360 INFO OPEN LONG USO 19.2430 @ 134.71 stop=132.02 target=140.10 level=high
+2026-08-20 15:38:34,360 INFO CMD conviction LONG USO level=high
+2026-08-20 15:38:34,362 INFO GLD price=414.89 rsi=66.5 signal=FLAT action=hold
+2026-08-20 15:38:34,364 INFO SPY price=765.85 rsi=31.7 signal=FLAT action=flat
+2026-08-20 15:38:34,365 INFO UCO price=45.35 rsi=63.2 signal=FLAT action=hold
+2026-08-20 15:38:34,367 INFO UNG price=9.90 rsi=34.3 signal=FLAT action=flat
+2026-08-20 15:38:34,368 INFO USO price=134.71 rsi=67.8 signal=FLAT action=hold
+2026-08-20 15:38:34,369 INFO XLE price=64.42 rsi=70.7 signal=FLAT action=flat
+2026-08-20 15:38:34,371 INFO STATUS market=open equity=$10368.93 cash=$10331.28 dailyPL=0.22% positions=['GLD', 'UCO', 'USO'] pending=0 trades=41
