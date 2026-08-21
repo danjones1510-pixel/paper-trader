@@ -803,3 +803,10 @@
 2026-08-21 19:51:58,112 INFO USO price=134.81 rsi=56.2 signal=FLAT action=hold
 2026-08-21 19:51:58,114 INFO XLE price=63.74 rsi=48.8 signal=FLAT action=flat
 2026-08-21 19:51:58,116 INFO STATUS market=open equity=$10384.11 cash=$10373.70 dailyPL=-0.01% positions=['UCO', 'USO'] pending=0 trades=54
+2026-08-21 20:30:58,203 INFO GLD last_bar=2026-08-21 15:30:00-04:00 age=61min -> market closed/stale
+2026-08-21 20:30:58,542 INFO SPY last_bar=2026-08-21 15:30:00-04:00 age=61min -> market closed/stale
+2026-08-21 20:30:58,818 INFO UCO last_bar=2026-08-21 15:30:00-04:00 age=61min -> market closed/stale
+2026-08-21 20:30:59,235 INFO UNG last_bar=2026-08-21 15:30:00-04:00 age=61min -> market closed/stale
+2026-08-21 20:30:59,561 INFO USO last_bar=2026-08-21 15:30:00-04:00 age=61min -> market closed/stale
+2026-08-21 20:30:59,909 INFO XLE last_bar=2026-08-21 15:30:00-04:00 age=61min -> market closed/stale
+2026-08-21 20:30:59,910 INFO STATUS market=closed equity=$10379.82 cash=$10373.70 dailyPL=-0.06% positions=['UCO', 'USO'] pending=0 trades=54
