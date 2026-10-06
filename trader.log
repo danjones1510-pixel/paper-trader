@@ -1631,3 +1631,10 @@
 2026-10-05 21:02:33,029 INFO USO last_bar=2026-10-05 15:30:00-04:00 age=93min -> market closed/stale
 2026-10-05 21:02:33,514 INFO XLE last_bar=2026-10-05 15:30:00-04:00 age=93min -> market closed/stale
 2026-10-05 21:02:33,517 INFO STATUS market=closed equity=$10742.22 cash=$10811.10 dailyPL=0.00% positions=['USO'] pending=0 trades=106
+2026-10-06 01:50:41,089 INFO GLD last_bar=2026-10-05 15:30:00-04:00 age=381min -> market closed/stale
+2026-10-06 01:50:41,460 INFO SPY last_bar=2026-10-05 15:30:00-04:00 age=381min -> market closed/stale
+2026-10-06 01:50:41,738 INFO UCO last_bar=2026-10-05 15:30:00-04:00 age=381min -> market closed/stale
+2026-10-06 01:50:42,126 INFO UNG last_bar=2026-10-05 15:30:00-04:00 age=381min -> market closed/stale
+2026-10-06 01:50:42,435 INFO USO last_bar=2026-10-05 15:30:00-04:00 age=381min -> market closed/stale
+2026-10-06 01:50:42,700 INFO XLE last_bar=2026-10-05 15:30:00-04:00 age=381min -> market closed/stale
+2026-10-06 01:50:42,702 INFO STATUS market=closed equity=$10742.22 cash=$10811.10 dailyPL=0.00% positions=['USO'] pending=0 trades=106
