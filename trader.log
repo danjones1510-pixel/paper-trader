@@ -1960,3 +1960,10 @@
 2026-10-28 18:43:29,688 INFO LIMIT LONG XLE 16.2454 @ 68.55 stop=67.18 target=71.29 level=normal
 2026-10-28 18:43:29,688 INFO XLE price=68.68 rsi=50.5 signal=LONG action=limit-LONG
 2026-10-28 18:43:29,691 INFO STATUS market=open equity=$11158.19 cash=$11158.19 dailyPL=0.00% positions=['USO'] pending=2 trades=124
+2026-10-28 23:03:01,265 INFO GLD last_bar=2026-10-28 15:30:00-04:00 age=213min -> market closed/stale
+2026-10-28 23:03:01,632 INFO SPY last_bar=2026-10-28 15:30:00-04:00 age=213min -> market closed/stale
+2026-10-28 23:03:01,947 INFO UCO last_bar=2026-10-28 15:30:00-04:00 age=213min -> market closed/stale
+2026-10-28 23:03:02,262 INFO UNG last_bar=2026-10-28 15:30:00-04:00 age=213min -> market closed/stale
+2026-10-28 23:03:02,567 INFO USO last_bar=2026-10-28 15:30:00-04:00 age=213min -> market closed/stale
+2026-10-28 23:03:02,925 INFO XLE last_bar=2026-10-28 15:30:00-04:00 age=213min -> market closed/stale
+2026-10-28 23:03:02,928 INFO STATUS market=closed equity=$11135.57 cash=$11158.19 dailyPL=-0.20% positions=['USO'] pending=2 trades=124
