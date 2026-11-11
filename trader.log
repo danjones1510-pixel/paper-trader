@@ -2105,3 +2105,13 @@
 2026-11-11 00:48:33,056 INFO USO last_bar=2026-11-10 15:30:00-05:00 age=259min -> market closed/stale
 2026-11-11 00:48:33,253 INFO XLE last_bar=2026-11-10 15:30:00-05:00 age=259min -> market closed/stale
 2026-11-11 00:48:33,256 INFO STATUS market=closed equity=$11053.39 cash=$11056.31 dailyPL=0.00% positions=['USO'] pending=1 trades=133
+2026-11-11 20:05:13,346 INFO CLOSE LONG USO 19.5258 @ 141.51 (conviction-replace) P/L=$-0.98
+2026-11-11 20:05:13,346 INFO OPEN LONG USO 19.5310 @ 141.51 stop=138.68 target=147.17 level=high
+2026-11-11 20:05:13,346 INFO CMD conviction LONG USO level=high
+2026-11-11 20:05:13,348 INFO GLD price=365.09 rsi=27.8 signal=FLAT action=flat
+2026-11-11 20:05:13,350 INFO SPY price=760.41 rsi=68.4 signal=FLAT action=flat
+2026-11-11 20:05:13,351 INFO UCO price=51.04 rsi=46.4 signal=FLAT action=flat
+2026-11-11 20:05:13,353 INFO UNG price=10.15 rsi=45.9 signal=FLAT action=hold
+2026-11-11 20:05:13,354 INFO USO price=141.51 rsi=41.6 signal=FLAT action=hold
+2026-11-11 20:05:13,356 INFO XLE price=63.12 rsi=62.1 signal=FLAT action=flat
+2026-11-11 20:05:13,359 INFO STATUS market=open equity=$11055.34 cash=$11055.34 dailyPL=0.02% positions=['USO'] pending=1 trades=134
