@@ -1,0 +1,22 @@
+{
+  "fills": [],
+  "open_orders": [
+    {
+      "client_order_id": "pt-977d64b145ba41aaa336",
+      "symbol": "UCO",
+      "side": "buy",
+      "qty": 22.789371,
+      "sim_price": 48.48360061645508,
+      "reason": "open/increase",
+      "submitted_at": "2026-11-20T20:07:54.278024+00:00"
+    }
+  ],
+  "last_sync": "2026-11-20T20:07:54.278175+00:00",
+  "account": {
+    "status": "ACTIVE",
+    "equity": "100000",
+    "cash": "100000",
+    "buying_power": "200000",
+    "mode": "paper"
+  }
+}
