@@ -231,21 +231,36 @@ def cancel_pending(state, symbol):
         log.info(f"CANCEL pending for {symbol}")
 
 def check_bracket(state, symbol, bar, prices, bar_ts):
-    """Exit if stop/target hit in this bar. Stop first (conservative)."""
+    """Exit if stop/target hit in this bar. Stop first (conservative).
+
+    Gap-aware fills: if the bar OPENS beyond the stop (price gapped through it),
+    a real stop order would trigger at the open and fill there, not at the stop
+    price -- so fill at the open. Same for a target gapped through (fills at the
+    open, which is the better price a resting limit would actually get).
+    """
     pos = state["positions"].get(symbol)
     if not pos:
         return
-    hi, lo = float(bar["High"]), float(bar["Low"])
+    op, hi, lo = float(bar["Open"]), float(bar["High"]), float(bar["Low"])
+    stop, target = pos["stop"], pos["target"]
     if pos["side"] == "LONG":
-        if lo <= pos["stop"]:
-            close_position(state, symbol, pos["stop"], "stop-hit", prices)
-        elif hi >= pos["target"]:
-            close_position(state, symbol, pos["target"], "target-hit", prices)
+        if op <= stop:
+            close_position(state, symbol, op, "stop-gap", prices)
+        elif lo <= stop:
+            close_position(state, symbol, stop, "stop-hit", prices)
+        elif op >= target:
+            close_position(state, symbol, op, "target-gap", prices)
+        elif hi >= target:
+            close_position(state, symbol, target, "target-hit", prices)
     else:
-        if hi >= pos["stop"]:
-            close_position(state, symbol, pos["stop"], "stop-hit", prices)
-        elif lo <= pos["target"]:
-            close_position(state, symbol, pos["target"], "target-hit", prices)
+        if op >= stop:
+            close_position(state, symbol, op, "stop-gap", prices)
+        elif hi >= stop:
+            close_position(state, symbol, stop, "stop-hit", prices)
+        elif op <= target:
+            close_position(state, symbol, op, "target-gap", prices)
+        elif lo <= target:
+            close_position(state, symbol, target, "target-hit", prices)
 
 def check_pending(state, symbol, bar, prices, bar_ts):
     """Fill a pending limit only if this bar is strictly after created_bar_time."""
@@ -571,18 +586,29 @@ def run():
         state["day_start_equity"] = total_equity(state, prices)
 
     # 2) manage exits + pending on NEW bars (only when market open)
+    #    Walk every COMPLETED bar since the last processed one, in order, so a
+    #    stop/target touched between runs (or during a missed run) is not skipped,
+    #    and a still-forming bar is never marked done with a partial high/low.
     if market_open:
+        bar_len = pd.Timedelta(INTERVAL)
+        now_utc = pd.Timestamp.now("UTC")
         for sym, df in bars.items():
-            last_ts, _, _ = bar_status(df)
             last_processed = state["last_processed_bar"].get(sym)
-            new_bar = (pd.Timestamp(last_processed).tz_localize("UTC") if last_processed and pd.Timestamp(last_processed).tzinfo is None else (pd.Timestamp(last_processed) if last_processed else None))
-            has_new = (new_bar is None) or (last_ts > new_bar)
-            if not has_new:
-                continue
-            bar = df.iloc[-1]
-            check_bracket(state, sym, bar, prices, last_ts)
-            check_pending(state, sym, bar, prices, last_ts)
-            state["last_processed_bar"][sym] = last_ts.isoformat()
+            lp = pd.Timestamp(last_processed) if last_processed else None
+            if lp is not None and lp.tzinfo is None:
+                lp = lp.tz_localize("UTC")
+            idx = df.index if df.index.tz is not None else df.index.tz_localize("UTC")
+            done = [i for i, ts in enumerate(idx) if ts + bar_len <= now_utc]
+            if lp is None:
+                done = done[-1:]  # first run for this symbol: just the latest completed bar
+            else:
+                done = [i for i in done if idx[i] > lp]
+            for i in done:
+                bar_ts = idx[i]
+                bar = df.iloc[i]
+                check_bracket(state, sym, bar, prices, bar_ts)
+                check_pending(state, sym, bar, prices, bar_ts)
+                state["last_processed_bar"][sym] = bar_ts.isoformat()
 
     # 3) commands (allowed in any market state — Dan may flatten/close off-hours;
     #    conviction opens only when market open + not halted)
