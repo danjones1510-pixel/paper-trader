@@ -30,6 +30,8 @@ from datetime import datetime, timezone, date, time as dtime
 import pandas as pd
 import yfinance as yf
 
+import broker_mirror
+
 # ----------------------------- Config -----------------------------
 _DEFAULT_WATCH = "SPY,USO,UCO,XLE,UNG,GLD"
 WATCHLIST = [s.strip().upper() for s in (os.environ.get("WATCHLIST") or _DEFAULT_WATCH).split(",") if s.strip()]
@@ -663,6 +665,7 @@ def run():
     state["equity_history"].append({"t": datetime.now(timezone.utc).isoformat(), "equity": round(equity, 2)})
     state["equity_history"] = state["equity_history"][-1000:]
     save_state(state)
+    broker_mirror.sync(state, prices)  # no-op unless Alpaca keys are configured; never raises
     save_commands(still_pending)  # persist only unapplied commands, after state is safely saved
     render_dashboard(state, prices, market_open, still_pending)
     log.info(f"STATUS market={'open' if market_open else 'closed'} equity=${equity:.2f} cash=${state['cash']:.2f} "

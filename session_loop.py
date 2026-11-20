@@ -46,7 +46,7 @@ def sync():
 
 
 def commit_push():
-    sh("git", "add", "paper_state.json", "dashboard.html", "trader.log", "commands.json", check=False)
+    sh("git", "add", "paper_state.json", "dashboard.html", "trader.log", "commands.json", "mirror_state.json", check=False)
     if subprocess.run(["git", "diff", "--staged", "--quiet"]).returncode == 0:
         return
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")

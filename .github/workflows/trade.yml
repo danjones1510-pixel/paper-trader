@@ -38,3 +38,9 @@ jobs:
         env:
           WATCHLIST: ${{ vars.WATCHLIST }}
           KILL_SWITCH: ${{ vars.KILL_SWITCH }}
+          # Alpaca mirror: inactive until these repo secrets exist. Paper endpoint
+          # unless ALPACA_BASE_URL is changed AND ALLOW_LIVE=true is set.
+          ALPACA_KEY_ID: ${{ secrets.ALPACA_API_KEY_ID }}
+          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_API_SECRET_KEY }}
+          ALPACA_BASE_URL: ${{ vars.ALPACA_BASE_URL }}
+          ALLOW_LIVE: ${{ vars.ALLOW_LIVE }}

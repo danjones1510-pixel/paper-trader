@@ -1,0 +1,26 @@
+name: Alpaca connection check
+
+# Manual, read-only: verifies the Alpaca keys and lists which watchlist ETFs
+# are tradable/fractionable. Places no orders and prints no secrets.
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - run: pip install requests
+      - run: python3 broker_mirror.py --check
+        env:
+          WATCHLIST: ${{ vars.WATCHLIST }}
+          ALPACA_KEY_ID: ${{ secrets.ALPACA_API_KEY_ID }}
+          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_API_SECRET_KEY }}
+          ALPACA_BASE_URL: ${{ vars.ALPACA_BASE_URL }}
+          ALLOW_LIVE: ${{ vars.ALLOW_LIVE }}
