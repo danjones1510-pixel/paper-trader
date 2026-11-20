@@ -1,6 +1,5 @@
 {
-  "fills": [],
-  "open_orders": [
+  "fills": [
     {
       "client_order_id": "pt-977d64b145ba41aaa336",
       "symbol": "UCO",
@@ -8,15 +7,21 @@
       "qty": 22.789371,
       "sim_price": 48.48360061645508,
       "reason": "open/increase",
-      "submitted_at": "2026-11-20T20:07:54.278024+00:00"
+      "submitted_at": "2026-11-20T20:07:54.278024+00:00",
+      "status": "filled",
+      "fill_price": 48.61,
+      "filled_qty": 22.789371,
+      "filled_at": "2026-11-20T20:07:54.965286405Z",
+      "slippage_per_share": 0.1264
     }
   ],
-  "last_sync": "2026-11-20T20:07:54.278175+00:00",
+  "open_orders": [],
+  "last_sync": "2026-11-20T20:32:02.684315+00:00",
   "account": {
     "status": "ACTIVE",
-    "equity": "100000",
-    "cash": "100000",
-    "buying_power": "200000",
+    "equity": "100007.29",
+    "cash": "98892.21",
+    "buying_power": "197784.42",
     "mode": "paper"
   }
 }

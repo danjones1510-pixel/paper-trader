@@ -2239,3 +2239,11 @@
 2026-11-20 20:07:53,431 INFO XLE price=60.83 rsi=34.5 signal=FLAT action=flat
 2026-11-20 20:07:54,278 INFO MIRROR SUBMIT buy UCO 22.7894 (sim price 48.48, open/increase)
 2026-11-20 20:07:54,278 INFO STATUS market=open equity=$11075.20 cash=$11075.63 dailyPL=0.75% positions=['UCO'] pending=0 trades=137
+2026-11-20 20:32:01,985 INFO GLD price=321.19 rsi=22.5 signal=FLAT action=flat
+2026-11-20 20:32:01,987 INFO SPY price=691.00 rsi=15.5 signal=FLAT action=flat
+2026-11-20 20:32:01,988 INFO UCO price=48.93 rsi=56.9 signal=FLAT action=hold
+2026-11-20 20:32:01,989 INFO UNG price=10.56 rsi=65.9 signal=FLAT action=flat
+2026-11-20 20:32:01,990 INFO USO price=139.12 rsi=58.8 signal=FLAT action=flat
+2026-11-20 20:32:01,991 INFO XLE price=60.81 rsi=36.0 signal=FLAT action=flat
+2026-11-20 20:32:02,194 INFO MIRROR FILLED buy UCO 22.7894 @ 48.61 (sim 48.48, slippage/sh +0.1264)
+2026-11-20 20:32:02,685 INFO STATUS market=open equity=$11085.37 cash=$11075.63 dailyPL=0.85% positions=['UCO'] pending=0 trades=137
