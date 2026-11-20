@@ -2198,3 +2198,5 @@
 2026-11-20 02:30:49,639 INFO USO last_bar=2026-11-19 15:30:00-05:00 age=361min -> market closed/stale
 2026-11-20 02:30:49,928 INFO XLE last_bar=2026-11-19 15:30:00-05:00 age=361min -> market closed/stale
 2026-11-20 02:30:49,930 INFO STATUS market=closed equity=$10992.32 cash=$11131.29 dailyPL=0.00% positions=['USO'] pending=1 trades=136
+2026-11-20 18:55:46,000 INFO CANCEL pending LONG UNG limit=9.14 (manual: stale since 2026-11-03)
+2026-11-20 18:55:46,000 INFO CMD queue cleared (conviction_long USO already applied; was replaying every run)

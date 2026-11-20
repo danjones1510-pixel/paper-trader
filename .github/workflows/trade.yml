@@ -2,8 +2,12 @@ name: Trade loop (paper)
 
 on:
   schedule:
-    # Every 30 min during US market hours, Mon-Fri.
-    - cron: "*/30 13-21 * * 1-5"
+    # GitHub throttles schedules heavily, so these are "kick" triggers: whichever
+    # lands first starts session_loop.py, which runs trader.py every 30 min
+    # (:02/:32 ET) inside one job until the close. Later kicks queue behind it via
+    # the concurrency group and take over if the 6h job budget runs out.
+    # Off-minute times avoid GitHub's top-of-hour congestion. UTC covers EST+EDT.
+    - cron: "7,37 13-20 * * 1-5"
   workflow_dispatch: {}
 
 permissions:
@@ -16,21 +20,21 @@ concurrency:
 jobs:
   run:
     runs-on: ubuntu-latest
+    timeout-minutes: 355
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
       - run: pip install -r requirements.txt
-      - name: Run trader
-        run: python3 trader.py
-        env:
-          WATCHLIST: ${{ vars.WATCHLIST }}
-          KILL_SWITCH: ${{ vars.KILL_SWITCH }}
-      - name: Commit state + dashboard
+      - name: Configure git
         run: |
           git config user.name "paper-trader-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add paper_state.json dashboard.html trader.log 2>/dev/null || true
-          git diff --staged --quiet || git commit -m "auto: trade loop run $(date -u +%FT%TZ)"
-          git push
+      - name: Run trader for the market session
+        run: python3 session_loop.py
+        env:
+          WATCHLIST: ${{ vars.WATCHLIST }}
+          KILL_SWITCH: ${{ vars.KILL_SWITCH }}

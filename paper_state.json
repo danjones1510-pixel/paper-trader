@@ -11,20 +11,7 @@
       "level": "high"
     }
   },
-  "pending": [
-    {
-      "symbol": "UNG",
-      "side": "LONG",
-      "qty": 121.180427,
-      "limit_price": 9.141679847717285,
-      "stop": 8.958846250762939,
-      "target": 9.507347041625977,
-      "level": "normal",
-      "created": "2026-11-03T20:00:14.555859+00:00",
-      "created_bar_time": "2026-11-03T14:30:00-05:00",
-      "bars_alive": 7
-    }
-  ],
+  "pending": [],
   "trades": [
     {
       "symbol": "USO",
