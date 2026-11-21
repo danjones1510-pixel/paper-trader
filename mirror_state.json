@@ -16,10 +16,10 @@
     }
   ],
   "open_orders": [],
-  "last_sync": "2026-11-20T21:02:02.401419+00:00",
+  "last_sync": "2026-11-21T00:46:13.304012+00:00",
   "account": {
     "status": "ACTIVE",
-    "equity": "100015.04",
+    "equity": "100005.7",
     "cash": "98892.21",
     "buying_power": "197784.42",
     "mode": "paper"
